@@ -9,7 +9,7 @@ resource "azurerm_vpn_server_configuration" "vpn_server_configurations" {
   vpn_protocols            = each.value.vpn_protocols
 
   dynamic "azure_active_directory_authentication" {
-    for_each = each.value.azure_active_directory_authentication != null ? [each.value.azure_active_directory_authentication] : []
+    for_each = each.value.azure_active_directory_authentication != null ? each.value.azure_active_directory_authentication : []
     content {
       audience = azure_active_directory_authentication.value.audience
       issuer   = azure_active_directory_authentication.value.issuer

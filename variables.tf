@@ -48,11 +48,11 @@ EOT
     vpn_authentication_types = list(string)
     tags                     = optional(map(string))
     vpn_protocols            = optional(set(string))
-    azure_active_directory_authentication = optional(object({
+    azure_active_directory_authentication = optional(list(object({
       audience = string
       issuer   = string
       tenant   = string
-    }))
+    })))
     client_revoked_certificate = optional(object({
       name       = string
       thumbprint = string
@@ -87,5 +87,13 @@ EOT
       }))
     }))
   }))
+  validation {
+    condition = alltrue([
+      for k, v in var.vpn_server_configurations : (
+        v.azure_active_directory_authentication == null || (length(v.azure_active_directory_authentication) >= 1)
+      )
+    ])
+    error_message = "Each azure_active_directory_authentication list must contain at least 1 items"
+  }
 }
 
