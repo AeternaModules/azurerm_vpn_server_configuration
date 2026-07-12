@@ -1,3 +1,7 @@
+output "vpn_server_configurations_id" {
+  description = "Map of id values across all vpn_server_configurations, keyed the same as var.vpn_server_configurations"
+  value       = { for k, v in azurerm_vpn_server_configuration.vpn_server_configurations : k => v.id }
+}
 output "vpn_server_configurations_azure_active_directory_authentication" {
   description = "Map of azure_active_directory_authentication values across all vpn_server_configurations, keyed the same as var.vpn_server_configurations"
   value       = { for k, v in azurerm_vpn_server_configuration.vpn_server_configurations : k => v.azure_active_directory_authentication }
