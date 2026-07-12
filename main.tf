@@ -18,7 +18,7 @@ resource "azurerm_vpn_server_configuration" "vpn_server_configurations" {
   }
 
   dynamic "client_revoked_certificate" {
-    for_each = each.value.client_revoked_certificate != null ? [each.value.client_revoked_certificate] : []
+    for_each = each.value.client_revoked_certificate != null ? each.value.client_revoked_certificate : []
     content {
       name       = client_revoked_certificate.value.name
       thumbprint = client_revoked_certificate.value.thumbprint
@@ -26,7 +26,7 @@ resource "azurerm_vpn_server_configuration" "vpn_server_configurations" {
   }
 
   dynamic "client_root_certificate" {
-    for_each = each.value.client_root_certificate != null ? [each.value.client_root_certificate] : []
+    for_each = each.value.client_root_certificate != null ? each.value.client_root_certificate : []
     content {
       name             = client_root_certificate.value.name
       public_cert_data = client_root_certificate.value.public_cert_data
@@ -51,14 +51,14 @@ resource "azurerm_vpn_server_configuration" "vpn_server_configurations" {
     for_each = each.value.radius != null ? [each.value.radius] : []
     content {
       dynamic "client_root_certificate" {
-        for_each = radius.value.client_root_certificate != null ? [radius.value.client_root_certificate] : []
+        for_each = radius.value.client_root_certificate != null ? radius.value.client_root_certificate : []
         content {
           name       = client_root_certificate.value.name
           thumbprint = client_root_certificate.value.thumbprint
         }
       }
       dynamic "server" {
-        for_each = radius.value.server != null ? [radius.value.server] : []
+        for_each = radius.value.server != null ? radius.value.server : []
         content {
           address = server.value.address
           score   = server.value.score
@@ -66,7 +66,7 @@ resource "azurerm_vpn_server_configuration" "vpn_server_configurations" {
         }
       }
       dynamic "server_root_certificate" {
-        for_each = radius.value.server_root_certificate != null ? [radius.value.server_root_certificate] : []
+        for_each = radius.value.server_root_certificate != null ? radius.value.server_root_certificate : []
         content {
           name             = server_root_certificate.value.name
           public_cert_data = server_root_certificate.value.public_cert_data

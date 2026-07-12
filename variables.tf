@@ -53,14 +53,14 @@ EOT
       issuer   = string
       tenant   = string
     })))
-    client_revoked_certificate = optional(object({
+    client_revoked_certificate = optional(list(object({
       name       = string
       thumbprint = string
-    }))
-    client_root_certificate = optional(object({
+    })))
+    client_root_certificate = optional(list(object({
       name             = string
       public_cert_data = string
-    }))
+    })))
     ipsec_policy = optional(object({
       dh_group               = string
       ike_encryption         = string
@@ -72,19 +72,19 @@ EOT
       sa_lifetime_seconds    = number
     }))
     radius = optional(object({
-      client_root_certificate = optional(object({
+      client_root_certificate = optional(list(object({
         name       = string
         thumbprint = string
-      }))
-      server = optional(object({
+      })))
+      server = optional(list(object({
         address = string
         score   = number
         secret  = string
-      }))
-      server_root_certificate = optional(object({
+      })))
+      server_root_certificate = optional(list(object({
         name             = string
         public_cert_data = string
-      }))
+      })))
     }))
   }))
   validation {
@@ -95,42 +95,13 @@ EOT
     ])
     error_message = "Each azure_active_directory_authentication list must contain at least 1 items"
   }
-  validation {
-    condition = alltrue([
-      for k, v in var.vpn_server_configurations : (
-        length(v.name) > 0
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.vpn_server_configurations : (
-        v.radius == null || (v.radius.server == null || (length(v.radius.server.address) > 0))
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.vpn_server_configurations : (
-        v.radius == null || (v.radius.server == null || (length(v.radius.server.secret) > 0))
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.vpn_server_configurations : (
-        v.radius == null || (v.radius.server == null || (v.radius.server.score >= 1 && v.radius.server.score <= 30))
-      )
-    ])
-    error_message = "must be between 1 and 30"
-  }
   # --- Unconfirmed validation candidates, derived from azurerm_vpn_server_configuration's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
   # or a path that crosses a list-typed block (needs its own for_each wrapping).
   # Review, translate into a real validation{} block above, and delete once confirmed.
+  # path: name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
   # path: resource_group_name
   #   condition: length(value) <= 90
   #   message:   [from resourcegroups.ValidateName: invalid when len(value) > 90]
@@ -161,6 +132,15 @@ EOT
   #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
   # path: ipsec_policy.pfs_group
   #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: radius.server.address
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: radius.server.secret
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: radius.server.score
+  #   condition: value >= 1 && value <= 30
+  #   message:   must be between 1 and 30
   # path: vpn_protocols[*]
   #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
   # path: tags
