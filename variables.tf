@@ -87,14 +87,6 @@ EOT
       })))
     }))
   }))
-  validation {
-    condition = alltrue([
-      for k, v in var.vpn_server_configurations : (
-        v.azure_active_directory_authentication == null || (length(v.azure_active_directory_authentication) >= 1)
-      )
-    ])
-    error_message = "Each azure_active_directory_authentication list must contain at least 1 items"
-  }
   # --- Unconfirmed validation candidates, derived from azurerm_vpn_server_configuration's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
   # or a path that crosses a list-typed block (needs its own for_each wrapping).
