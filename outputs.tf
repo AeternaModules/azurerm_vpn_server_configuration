@@ -16,7 +16,7 @@ output "vpn_server_configurations_client_root_certificate" {
 }
 output "vpn_server_configurations_ipsec_policy" {
   description = "Map of ipsec_policy values across all vpn_server_configurations, keyed the same as var.vpn_server_configurations"
-  value       = { for k, v in azurerm_vpn_server_configuration.vpn_server_configurations : k => v.ipsec_policy if v.ipsec_policy != null && length(v.ipsec_policy) > 0 }
+  value       = { for k, v in azurerm_vpn_server_configuration.vpn_server_configurations : k => one(v.ipsec_policy) if v.ipsec_policy != null && length(v.ipsec_policy) > 0 }
 }
 output "vpn_server_configurations_location" {
   description = "Map of location values across all vpn_server_configurations, keyed the same as var.vpn_server_configurations"
@@ -28,7 +28,7 @@ output "vpn_server_configurations_name" {
 }
 output "vpn_server_configurations_radius" {
   description = "Map of radius values across all vpn_server_configurations, keyed the same as var.vpn_server_configurations"
-  value       = { for k, v in azurerm_vpn_server_configuration.vpn_server_configurations : k => v.radius if v.radius != null && length(v.radius) > 0 }
+  value       = { for k, v in azurerm_vpn_server_configuration.vpn_server_configurations : k => one(v.radius) if v.radius != null && length(v.radius) > 0 }
   sensitive   = true
 }
 output "vpn_server_configurations_resource_group_name" {
